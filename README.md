@@ -2,7 +2,7 @@
 
 # Understanding the Lab Repository Structure
 
-For this course, labs are in subdirs (`lab01/`, `lab02/`, etc.) within one Git repo (`advanced-terraform-course-starter`). You forked it and commit there.
+For this course, labs are in subdirs (`lab01/`, `lab02/`, etc.) within one Git repo (`wa3581-starter`). You will fork this repo and commit your work there.
 
 Why this structure?  
 - **Simplicity:** All materials + work in one place, easy to navigate/manage w/ checkpoints or solutions.  
