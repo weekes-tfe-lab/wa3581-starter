@@ -1,0 +1,64 @@
+name: Module CI Checks (Lab 4)
+
+on:
+  # Run on pushes to main branch
+  push:
+    branches:
+      - main
+  # Run on pull requests targeting main branch
+  pull_request:
+    branches:
+      - main
+  # Allows manual triggering from GitHub UI
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Lint, Validate, Test, Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        # with:
+        #   terraform_version: "1.7.x" # Optional: Pin version
+
+      - name: Terraform Format Check (Recursive)
+        working-directory: ./lab04 # Run from lab04 dir
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init (for Root Validate)
+        working-directory: ./lab04 # Run from lab04 dir
+        run: terraform init # Needed for validate
+
+      - name: Terraform Validate (Root Harness)
+        working-directory: ./lab04 # Run from lab04 dir
+        run: terraform validate # Checks if lab04/main.tf is valid
+
+      - name: Init Module for Testing
+        working-directory: ./lab04/modules/sqs-secure # Go into module dir
+        env: # Add AWS credentials and region for test apply steps
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-west-2"
+        run: terraform init # Initialize providers needed for tests
+
+      - name: Terraform Test Module
+        working-directory: ./lab04/modules/sqs-secure # Run test from module dir
+        env: # Add AWS credentials and region for test apply steps
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-west-2"
+        run: terraform test # Runs tests found in ./tests/
+
+      - name: Install Checkov
+        # Run pip install globally or in a virtual env
+        run: pip install checkov
+
+      - name: Run Checkov Scan
+        working-directory: ./lab04 # Define where checkov runs FROM
+        # Point checkov specifically to the module directory
+        run: checkov -d ./modules/sqs-secure --quiet
