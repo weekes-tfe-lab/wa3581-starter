@@ -4,9 +4,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-     # Random provider needed by module via S3 bucket name
+    # Random provider needed by module via S3 bucket name
     random = {
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
       version = "~> 3.1"
     }
   }

@@ -11,7 +11,7 @@ output "main_queue_url" {
 output "dlq_arn" {
   description = "The ARN of the Dead Letter Queue (DLQ), if created."
   # Use try() to gracefully return null if the DLQ doesn't exist (count=0)
-  value       = try(aws_sqs_queue.dlq[0].arn, null)
+  value = try(aws_sqs_queue.dlq[0].arn, null)
 }
 
 output "kms_key_arn" {

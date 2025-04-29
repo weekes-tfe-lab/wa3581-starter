@@ -1,7 +1,7 @@
 resource "aws_kms_key" "sqs_key" {
-  description             = "KMS key for encrypting ${var.queue_name_prefix} SQS queues"
+  description         = "KMS key for encrypting ${var.queue_name_prefix} SQS queues"
   enable_key_rotation = true
-  tags                  = var.tags
+  tags                = var.tags
 }
 
 resource "aws_sqs_queue" "dlq" {
