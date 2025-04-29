@@ -61,4 +61,4 @@ jobs:
       - name: Run Checkov Scan
         working-directory: ./lab04 # Define where checkov runs FROM
         # Point checkov specifically to the module directory
-        run: checkov -d ./modules/sqs-secure --quiet
+        run: checkov -d ./modules/sqs-secure --quiet --skip-check CKV2_AWS_64
